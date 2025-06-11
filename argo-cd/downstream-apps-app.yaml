@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: api-mesh
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/your-org/zero-touch-api-gateway.git'
+    path: charts/sample-microservice
+    targetRevision: main
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: api-services
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

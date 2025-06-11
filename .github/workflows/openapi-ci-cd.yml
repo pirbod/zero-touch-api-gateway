@@ -1,0 +1,33 @@
+name: OpenAPI → Helm → ChartMuseum
+
+on:
+  pull_request:
+    paths:
+      - 'charts/**/values.yaml'
+      - 'charts/**/Chart.yaml'
+      - 'openapi/**.yaml'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    env:
+      CHARTMUSEUM_URL: ${{ secrets.CHARTMUSEUM_URL }}
+      CHARTMUSEUM_API_KEY: ${{ secrets.CHARTMUSEUM_API_KEY }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Lint OpenAPI spec
+        run: |
+          npm install -g @apidevtools/swagger-cli
+          swagger-cli validate openapi/sample-service.yaml
+
+      - name: Package Helm charts
+        run: |
+          helm package charts/tyk-gateway
+          helm package charts/sample-microservice
+
+      - name: Push to ChartMuseum
+        run: |
+          helm plugin install https://github.com/chartmuseum/helm-push.git --version v0.10.0
+          helm cm-push tyk-gateway-*.tgz $CHARTMUSEUM_URL --version $CHARTMUSEUM_API_KEY
+          helm cm-push sample-microservice-*.tgz $CHARTMUSEUM_URL --version $CHARTMUSEUM_API_KEY

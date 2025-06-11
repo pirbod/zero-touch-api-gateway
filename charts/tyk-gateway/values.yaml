@@ -1,0 +1,7 @@
+image:
+  repository: "{{ .Values.global.registry }}/tyk-gateway"
+  tag: latest
+
+pump:
+  enabled: true
+  storageUrl: "{{ .Values.analytics.storageUrl }}"

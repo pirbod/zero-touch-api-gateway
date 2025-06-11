@@ -1,0 +1,4 @@
+apiVersion: v2
+name: sample-microservice
+description: Demo API node service with Tyk annotations
+version: 0.1.0

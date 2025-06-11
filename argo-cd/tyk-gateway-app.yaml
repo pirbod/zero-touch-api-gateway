@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tyk-gateway
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/your-org/zero-touch-api-gateway.git'
+    targetRevision: main
+    chart: tyk-gateway
+    helm:
+      values: |
+        global:
+          registry: {{ .Values.acr_login_server }}
+        analytics:
+          storageUrl: {{ .Values.pump_container_url }}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: tyk-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
