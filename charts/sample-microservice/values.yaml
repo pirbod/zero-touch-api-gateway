@@ -1,0 +1,14 @@
+image:
+  repository: yourdockerhub/sample-service
+  tag: 1.0.0
+
+service:
+  type: ClusterIP
+  port: 8080
+
+tyk:
+  enabled: true
+  name: sample-service
+  version: v1
+  openapiSpec: |-
+    # embed or reference your OpenAPI spec here
